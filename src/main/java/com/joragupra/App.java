@@ -13,7 +13,11 @@ import javafx.stage.Stage;
 
 public class App extends Application {
 
-    private enum SimulationStatus { SUCCESSFUL, FAILED, NOT_RUN };
+    private enum SimulationStatus {
+        SUCCESSFUL,
+        FAILED,
+        NOT_RUN
+    };
 
     private SimulationStatus simulationStatus;
 
@@ -108,10 +112,8 @@ public class App extends Application {
         var simResult = Math.random();
         if (simResult > 0.5) {
             simulationStatus = SimulationStatus.SUCCESSFUL;
-        }
-        else {
+        } else {
             simulationStatus = SimulationStatus.FAILED;
         }
     }
-
 }
