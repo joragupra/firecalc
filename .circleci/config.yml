@@ -23,7 +23,7 @@ jobs:
           command: |
             mkdir -p ~/test-results/junit/
             find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
-            ls -la ~/target
+            ls -la ~/firecalc/target
           when: always
       - store_test_results:
           path: ~/test-results
