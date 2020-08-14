@@ -15,10 +15,15 @@ jobs:
           command: mvn clean test
 
       - run:
+          name: Generate test report
+          command: mvn surefire-report:report-only
+
+      - run:
           name: Save test results
           command: |
             mkdir -p ~/test-results/junit/
             find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
+            cp -R ~/target/site ~/test-results/junit/
           when: always
       - store_test_results:
           path: ~/test-results
