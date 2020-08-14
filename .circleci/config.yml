@@ -10,15 +10,13 @@ jobs:
     steps:
       - checkout
 
-      - run: ls -la
-
-      - run: pwd
-
-      - run: mvn clean test
+      - run:
+        - name: Run tests
+        - command: mvn clean test
 
       - save_cache: # saves the project dependencies
           paths:
             - ~/.m2
           key: circleci-demo-java-spring-{{ checksum "pom.xml" }}
 
-      - run: mvn clean package
+      - run: mvn package
