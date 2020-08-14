@@ -31,6 +31,7 @@ jobs:
           path: ~/test-results
       - store_artifacts:
           path: ~/test-results/junit
+          destination: test-results
 
       - save_cache: # saves the project dependencies
           paths:
