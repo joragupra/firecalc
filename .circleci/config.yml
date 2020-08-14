@@ -2,8 +2,11 @@ version: 2.1
 
 jobs:
   build:
+    working_directory: ~/firecalc
+
     docker:
       - image: circleci/openjdk:11
+
     steps:
       - run: mvn clean test
 
