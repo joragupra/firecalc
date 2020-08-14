@@ -16,14 +16,16 @@ jobs:
 
       - run:
           name: Generate test report
-          command: mvn surefire-report:report-only
+          command: |
+            mvn surefire-report:report-only
+            mvn site -DgenerateReports=false
 
       - run:
           name: Save test results
           command: |
             mkdir -p ~/test-results/junit/
             find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
-            ls -la ~/firecalc/target
+            cp -R ~/firecalc/target/site ~/test-results/junit/
           when: always
       - store_test_results:
           path: ~/test-results
