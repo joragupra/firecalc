@@ -4,7 +4,8 @@ import java.time.LocalDate;
 import java.time.Period;
 import javax.money.MonetaryAmount;
 
-public class CashPortfolioSimulator {
+public class CashPortfolioSimulator implements IFIRESimulator {
+    @Override
     public boolean simulate(
             MonetaryAmount initialCash,
             MonetaryAmount yearlySpending,
