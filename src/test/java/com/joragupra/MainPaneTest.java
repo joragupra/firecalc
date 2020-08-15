@@ -1,5 +1,6 @@
 package com.joragupra;
 
+import static com.joragupra.gui.GUITestHelper.setHeadlessTest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -20,10 +21,7 @@ public class MainPaneTest {
 
     @BeforeAll
     public static void setup() {
-        System.setProperty("testfx.robot", "glass");
-        System.setProperty("testfx.headless", "true");
-        System.setProperty("prism.order", "sw");
-        System.setProperty("prism.text", "t2k");
+        setHeadlessTest();
     }
 
     @Test
