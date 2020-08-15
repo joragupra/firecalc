@@ -1,12 +1,17 @@
 package com.joragupra;
 
 import com.joragupra.fire.IFIRESimulator;
+import com.joragupra.gui.InputTextField;
+import com.joragupra.gui.MandatoryFieldValidator;
+import com.joragupra.gui.NumberFieldValidator;
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import org.javamoney.moneta.Money;
@@ -20,10 +25,11 @@ class MainPane extends GridPane {
     };
 
     private SimulationStatus simulationStatus;
-    TextField retirementYearInput;
-    TextField retirementYearEndInput;
-    TextField portfolioAmountInput;
-    TextField yearlySpendingInput;
+    InputTextField retirementYearInputTextField;
+    InputTextField retirementYearEndInputTextField;
+    InputTextField portfolioAmountInputTextField;
+    InputTextField yearlySpendingInputTextField;
+    private List<InputTextField> inputTextFields;
 
     IFIRESimulator simulator;
     Text simulationResult = new Text();
@@ -32,6 +38,7 @@ class MainPane extends GridPane {
         this.simulator = simulator;
 
         createInputFields();
+        inputTextFields = List.of(portfolioAmountInputTextField, yearlySpendingInputTextField);
 
         this.add(createRunSimulationButton(simulator), 0, 4);
 
@@ -46,29 +53,25 @@ class MainPane extends GridPane {
     }
 
     private void createInputFields() {
-        var retirementYearLabel = new Label("Retirement year");
-        retirementYearInput = new TextField();
+        retirementYearInputTextField =
+                new InputTextField("Retirement year", Collections.emptyList());
+        this.add(arrangeInputField(retirementYearInputTextField), 0, 0);
 
-        this.add(retirementYearLabel, 0, 0);
-        this.add(retirementYearInput, 1, 0);
+        retirementYearEndInputTextField =
+                new InputTextField("Retirement year end", Collections.emptyList());
+        this.add(arrangeInputField(retirementYearEndInputTextField), 0, 1);
 
-        var retirementYearEndLabel = new Label("Retirement year end");
-        retirementYearEndInput = new TextField();
+        portfolioAmountInputTextField =
+                new InputTextField(
+                        "Portfolio amount",
+                        List.of(new MandatoryFieldValidator(), new NumberFieldValidator()));
+        this.add(arrangeInputField(portfolioAmountInputTextField), 0, 2);
 
-        this.add(retirementYearEndLabel, 0, 1);
-        this.add(retirementYearEndInput, 1, 1);
-
-        var portfolioAmountLabel = new Label("Portfolio amount");
-        portfolioAmountInput = new TextField();
-
-        this.add(portfolioAmountLabel, 0, 2);
-        this.add(portfolioAmountInput, 1, 2);
-
-        var yearlySpendingLabel = new Label("Yearly spending");
-        yearlySpendingInput = new TextField();
-
-        this.add(yearlySpendingLabel, 0, 3);
-        this.add(yearlySpendingInput, 1, 3);
+        yearlySpendingInputTextField =
+                new InputTextField(
+                        "Yearly spending",
+                        List.of(new MandatoryFieldValidator(), new NumberFieldValidator()));
+        this.add(arrangeInputField(yearlySpendingInputTextField), 0, 3);
     }
 
     private Button createRunSimulationButton(IFIRESimulator simulator) {
@@ -78,16 +81,27 @@ class MainPane extends GridPane {
     }
 
     private void runSimulationAndUpdateResult(ActionEvent actionEvent) {
-        runSimulation();
-        showSimulationResult();
+        if (validateAllInputs()) {
+            runSimulation();
+            showSimulationResult();
+        }
+    }
+
+    private boolean validateAllInputs() {
+        inputTextFields.forEach(InputTextField::validate);
+        return inputTextFields.stream().noneMatch(InputTextField::isErrorVisible);
     }
 
     private void runSimulation() {
         if (simulator.simulate(
-                Money.of(Long.parseLong(portfolioAmountInput.getText()), "EUR"),
-                Money.of(Long.parseLong(yearlySpendingInput.getText()), "EUR"),
-                LocalDate.of(Integer.parseInt(retirementYearInput.getText()), 1, 1),
-                LocalDate.of(Integer.parseInt(retirementYearEndInput.getText()), 1, 1))) {
+                Money.of(Long.parseLong(portfolioAmountInputTextField.textField.getText()), "EUR"),
+                Money.of(Long.parseLong(yearlySpendingInputTextField.textField.getText()), "EUR"),
+                LocalDate.of(
+                        Integer.parseInt(retirementYearInputTextField.textField.getText()), 1, 1),
+                LocalDate.of(
+                        Integer.parseInt(retirementYearEndInputTextField.textField.getText()),
+                        1,
+                        1))) {
             simulationStatus = SimulationStatus.SUCCESSFUL;
         } else {
             simulationStatus = SimulationStatus.FAILED;
@@ -110,8 +124,14 @@ class MainPane extends GridPane {
         }
     }
 
+    private Pane arrangeInputField(InputTextField inputTextField) {
+        return new HBox(inputTextField.label, inputTextField.textField, inputTextField.error);
+    }
+
     void simulate() {
-        runSimulation();
-        showSimulationResult();
+        if (validateAllInputs()) {
+            runSimulation();
+            showSimulationResult();
+        }
     }
 }

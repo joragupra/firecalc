@@ -2,8 +2,9 @@ package com.joragupra;
 
 import static com.joragupra.gui.GUITestHelper.setHeadlessTest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import com.joragupra.fire.IFIRESimulator;
 import java.time.LocalDate;
@@ -56,10 +57,126 @@ public class MainPaneTest {
         assertEquals("Failed", mainPane.simulationResult.getText());
     }
 
+    @Test
+    public void shouldSimulate_WhenAllValidationsSucceed(@Mock IFIRESimulator simulator) {
+        when(simulator.simulate(
+                        any(MonetaryAmount.class),
+                        any(MonetaryAmount.class),
+                        any(LocalDate.class),
+                        any(LocalDate.class)))
+                .thenReturn(false);
+        var mainPane = new MainPane(simulator);
+        setDefaultInputValues(mainPane);
+
+        mainPane.simulate();
+
+        verify(simulator, times(1))
+                .simulate(
+                        any(MonetaryAmount.class),
+                        any(MonetaryAmount.class),
+                        any(LocalDate.class),
+                        any(LocalDate.class));
+    }
+
+    @Test
+    public void shouldNotSimulate_WhenAValidationsFails(
+            @Mock(lenient = true) IFIRESimulator simulator) {
+        when(simulator.simulate(
+                        any(MonetaryAmount.class),
+                        any(MonetaryAmount.class),
+                        any(LocalDate.class),
+                        any(LocalDate.class)))
+                .thenReturn(false);
+        var mainPane = new MainPane(simulator);
+        setDefaultInputValues(mainPane);
+        mainPane.portfolioAmountInputTextField.textField.setText("");
+
+        mainPane.simulate();
+
+        verify(simulator, times(0))
+                .simulate(
+                        any(MonetaryAmount.class),
+                        any(MonetaryAmount.class),
+                        any(LocalDate.class),
+                        any(LocalDate.class));
+    }
+
+    @Test
+    public void shouldValidatePortfolioAmountIsPresent(
+            @Mock(lenient = true) IFIRESimulator simulator) {
+        when(simulator.simulate(
+                        any(MonetaryAmount.class),
+                        any(MonetaryAmount.class),
+                        any(LocalDate.class),
+                        any(LocalDate.class)))
+                .thenReturn(false);
+        var mainPane = new MainPane(simulator);
+        setDefaultInputValues(mainPane);
+        mainPane.portfolioAmountInputTextField.textField.setText("");
+
+        mainPane.simulate();
+
+        assertTrue(mainPane.portfolioAmountInputTextField.isErrorVisible());
+    }
+
+    @Test
+    public void shouldValidatePortfolioAmountIsANumber(
+            @Mock(lenient = true) IFIRESimulator simulator) {
+        when(simulator.simulate(
+                        any(MonetaryAmount.class),
+                        any(MonetaryAmount.class),
+                        any(LocalDate.class),
+                        any(LocalDate.class)))
+                .thenReturn(false);
+        var mainPane = new MainPane(simulator);
+        setDefaultInputValues(mainPane);
+        mainPane.portfolioAmountInputTextField.textField.setText("abc");
+
+        mainPane.simulate();
+
+        assertTrue(mainPane.portfolioAmountInputTextField.isErrorVisible());
+    }
+
+    @Test
+    public void shouldValidateYearlySpendingIsPresent(
+            @Mock(lenient = true) IFIRESimulator simulator) {
+        when(simulator.simulate(
+                        any(MonetaryAmount.class),
+                        any(MonetaryAmount.class),
+                        any(LocalDate.class),
+                        any(LocalDate.class)))
+                .thenReturn(false);
+        var mainPane = new MainPane(simulator);
+        setDefaultInputValues(mainPane);
+        mainPane.yearlySpendingInputTextField.textField.setText("");
+
+        mainPane.simulate();
+
+        assertTrue(mainPane.yearlySpendingInputTextField.isErrorVisible());
+    }
+
+    @Test
+    public void shouldValidateYearlySpendingIsANumber(
+            @Mock(lenient = true) IFIRESimulator simulator) {
+        when(simulator.simulate(
+                        any(MonetaryAmount.class),
+                        any(MonetaryAmount.class),
+                        any(LocalDate.class),
+                        any(LocalDate.class)))
+                .thenReturn(false);
+        var mainPane = new MainPane(simulator);
+        setDefaultInputValues(mainPane);
+        mainPane.yearlySpendingInputTextField.textField.setText("abc");
+
+        mainPane.simulate();
+
+        assertTrue(mainPane.yearlySpendingInputTextField.isErrorVisible());
+    }
+
     private void setDefaultInputValues(MainPane mainPane) {
-        mainPane.portfolioAmountInput.setText("0");
-        mainPane.yearlySpendingInput.setText("0");
-        mainPane.retirementYearInput.setText("2020");
-        mainPane.retirementYearEndInput.setText("2050");
+        mainPane.portfolioAmountInputTextField.textField.setText("0");
+        mainPane.yearlySpendingInputTextField.textField.setText("0");
+        mainPane.retirementYearInputTextField.textField.setText("2020");
+        mainPane.retirementYearEndInputTextField.textField.setText("2050");
     }
 }
