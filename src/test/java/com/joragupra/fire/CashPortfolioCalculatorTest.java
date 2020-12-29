@@ -18,7 +18,7 @@ public class CashPortfolioCalculatorTest {
     private LocalDate year2050 = LocalDate.of(2050, 1, 1);
 
     @Test
-    public void shouldBeEnough_WhenCashDividedByTotalYearsIsGreaterThanYearlySpending() {
+    public void shouldBeEnough_WhenPortfolioValueDividedByTotalYearsIsGreaterThanYearlySpending() {
         var yearlySpending = Money.of(30000, DEFAULT_CURRENCY);
 
         assertTrue(
@@ -27,7 +27,7 @@ public class CashPortfolioCalculatorTest {
     }
 
     @Test
-    public void shouldBeEnough_WhenCashDividedByTotalYearsIsEqualToYearlySpending() {
+    public void shouldBeEnough_WhenPortfolioValueDividedByTotalYearsIsEqualToYearlySpending() {
         var yearlySpending = Money.of(30000, DEFAULT_CURRENCY);
 
         assertTrue(
@@ -36,7 +36,7 @@ public class CashPortfolioCalculatorTest {
     }
 
     @Test
-    public void shouldNotBeEnough_WhenCashDividedByTotalYearsIsLessThanYearlySpending() {
+    public void shouldNotBeEnough_WhenPortfolioValueDividedByTotalYearsIsLessThanYearlySpending() {
         var yearlySpending = Money.of(30000, DEFAULT_CURRENCY);
 
         assertFalse(
@@ -45,7 +45,7 @@ public class CashPortfolioCalculatorTest {
     }
 
     @Test
-    public void shouldNotBeEnough_WhenNoCashProvided() {
+    public void shouldNotBeEnough_WhenPortfolioHasZeroValue() {
         var zeroEuros = Money.of(0, DEFAULT_CURRENCY);
 
         assertFalse(simulator.simulate(zeroEuros, null, null, null));

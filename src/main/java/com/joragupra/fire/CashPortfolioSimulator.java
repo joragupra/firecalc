@@ -7,15 +7,15 @@ import javax.money.MonetaryAmount;
 public class CashPortfolioSimulator implements IFIRESimulator {
     @Override
     public boolean simulate(
-            MonetaryAmount initialCash,
+            MonetaryAmount portfolioValue,
             MonetaryAmount yearlySpending,
             LocalDate retirementStart,
             LocalDate retirementEnd) {
-        if (initialCash.isNegativeOrZero()) {
+        if (portfolioValue.isNegativeOrZero()) {
             return false;
         }
 
-        return initialCash
+        return portfolioValue
                 .divide(yearsBetween(retirementStart, retirementEnd))
                 .isGreaterThanOrEqualTo(yearlySpending);
     }

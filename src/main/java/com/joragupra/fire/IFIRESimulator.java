@@ -5,7 +5,7 @@ import javax.money.MonetaryAmount;
 
 public interface IFIRESimulator {
     boolean simulate(
-            MonetaryAmount initialCash,
+            MonetaryAmount portfolioValue,
             MonetaryAmount yearlySpending,
             LocalDate retirementStart,
             LocalDate retirementEnd);
